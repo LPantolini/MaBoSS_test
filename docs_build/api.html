@@ -1,0 +1,244 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>maboss_test API &#8212; MaBoSS_test  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="MaBoSS_test tutorial" href="Tutorial.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="maboss-test-api">
+<h1>maboss_test API<a class="headerlink" href="#maboss-test-api" title="Permalink to this headline">¶</a></h1>
+<p>In the <code class="docutils literal notranslate"><span class="pre">maboss_test</span></code> module,</p>
+<span class="target" id="module-maboss_test.MaBoSSTestCase"></span><dl class="class">
+<dt id="maboss_test.MaBoSSTestCase.MaBoSSTestCase">
+<em class="property">class </em><code class="descclassname">maboss_test.MaBoSSTestCase.</code><code class="descname">MaBoSSTestCase</code><span class="sig-paren">(</span><em>sim</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/maboss_test/MaBoSSTestCase.html#MaBoSSTestCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#maboss_test.MaBoSSTestCase.MaBoSSTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>MaBoSSTestCase is the class used to verify model validity. 
+It contains several methods to test various conditions</p>
+<dl class="method">
+<dt id="maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertNodesDependencies">
+<code class="descname">assertNodesDependencies</code><span class="sig-paren">(</span><em>mutations</em>, <em>condition</em>, <em>nodes_expected</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/maboss_test/MaBoSSTestCase.html#MaBoSSTestCase.assertNodesDependencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertNodesDependencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that all states satisfying a condition on some given nodes also present the expected value for some other nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mutations</strong> (<em>dict</em>) – The mutations to apply to the model</li>
+<li><strong>condition</strong> (<em>dict</em>) – A list of nodes with a specifc value assigned (0:inactive or 1:active) that a state has to respect in order to be selected</li>
+<li><strong>nodes_expected</strong> (<em>dict</em>) – A list of nodes with a specifc value assigned (0:inactive or 1:active) that all the selected states have to respect</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function will simulate the model with the given mutations.
+It will then extract the stable states of the model in which the activity of the nodes in condition is satisfied.</p>
+<blockquote>
+<div>It will then check that, for each selected state, the values of the nodes in nodes_expected is satisfied.</div></blockquote>
+<p>If not correct, this test will fail by raising an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStableStateProbability">
+<code class="descname">assertStableStateProbability</code><span class="sig-paren">(</span><em>mutations</em>, <em>state</em>, <em>direction</em>, <em>reference_prob=0</em>, <em>digits=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/maboss_test/MaBoSSTestCase.html#MaBoSSTestCase.assertStableStateProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStableStateProbability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert the evolution of the probability of a given stable state after applying a mutation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mutations</strong> (<em>dict</em>) – The mutations to apply to the model</li>
+<li><strong>state</strong> (<em>dict</em>) – The state to evaluate</li>
+<li><strong>direction</strong> (<em>string</em>) – The direction of the evolution of the given state, it may be: ‘increase’, ‘decrease’ or ‘stable’
+:param float reference_prob: The probability that will be compared with the probability to obtain “state”
+:param int digits: The number of digits you want to keep during the comparison</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function will simulate the model with the given mutations.
+It will then compare simulation results with reference_prob, and check if the given stable state is evolving in the indicated direction. 
+If not correct, this test will fail by raising an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStableStateProbabilityEvolution">
+<code class="descname">assertStableStateProbabilityEvolution</code><span class="sig-paren">(</span><em>mutations</em>, <em>I_C</em>, <em>state</em>, <em>direction</em>, <em>digits=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/maboss_test/MaBoSSTestCase.html#MaBoSSTestCase.assertStableStateProbabilityEvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStableStateProbabilityEvolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert the evolution of the probability of a given stable state after applying a mutation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mutations</strong> (<em>dict</em>) – The mutations to apply to the model</li>
+<li><strong>I_C</strong> – Initial conditions with which to simulate the model, it may be a list or a dictionary</li>
+<li><strong>state</strong> (<em>dict</em>) – The state to evaluate</li>
+<li><strong>direction</strong> (<em>string</em>) – The direction of the evolution of the given state, it may be: ‘increase’, ‘decrease’ or ‘stable’
+:param int digits: The number of digits you want to keep during the comparison</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function will simulate the wild type model and the model with the given mutations, both with the initial conditions I_C. 
+It will then compare simulation results, and check if the given stable state is evolving in the indicated direction. 
+If not correct, this test will fail by raising an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStateProbabilityEvolution">
+<code class="descname">assertStateProbabilityEvolution</code><span class="sig-paren">(</span><em>mutations</em>, <em>I_C</em>, <em>state</em>, <em>direction</em>, <em>digits=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/maboss_test/MaBoSSTestCase.html#MaBoSSTestCase.assertStateProbabilityEvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStateProbabilityEvolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert the evolution of the probability of a given state after applying a mutation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mutations</strong> (<em>dict</em>) – The mutations to apply to the model</li>
+<li><strong>I_C</strong> – Initial conditions with which to simulate the model, it may be a list or a dictionary</li>
+<li><strong>state</strong> (<em>dict</em>) – The state to evaluate</li>
+<li><strong>direction</strong> (<em>string</em>) – The direction of the evolution of the given state, it may be: ‘increase’, ‘decrease’ or ‘stable’
+:param int digits: The number of digits you want to keep during the comparison</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function will simulate the wild type model and the model with the given mutations, both with the initial conditions I_C. 
+It will then compare simulation results, and check if the given state is evolving in the indicated direction. 
+If not correct, this test will fail by raising an exception.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="maboss_test.MaBoSSTestCase.MaBoSSTestCase.getLastNodesProbabilities">
+<code class="descname">getLastNodesProbabilities</code><span class="sig-paren">(</span><em>mutations</em>, <em>I_C</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/maboss_test/MaBoSSTestCase.html#MaBoSSTestCase.getLastNodesProbabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#maboss_test.MaBoSSTestCase.MaBoSSTestCase.getLastNodesProbabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dictionary with the final activation probabily of every node in the model.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param dict mutations:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">The mutations to apply to the model</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>I_C</strong> (<em>dict</em>) – Initial conditions with which to simulate the model, it may be a list or a dictionary</td>
+</tr>
+</tbody>
+</table>
+<p>This function will simulate the model with the given mutations and initial conditions.
+It will then return the activation probability of each node in a form that can be used as initial condition for the assert functions.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MaBoSS_test</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">MaBoSS_test tutorial</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">maboss_test API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Tutorial.html" title="previous chapter">MaBoSS_test tutorial</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Lorenzo Pantolini.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='maboss_test',
-    version="1.0.0a4",
+    version="1.0.0a5",
     author="Lorenzo Pantolini",
     author_email="lorenzopantolini@protonmail.com",
     description="A testing library for MaBoSS models",

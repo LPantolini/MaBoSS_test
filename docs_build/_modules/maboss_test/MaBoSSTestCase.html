@@ -1,0 +1,558 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>maboss_test.MaBoSSTestCase &#8212; MaBoSS_test  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for maboss_test.MaBoSSTestCase</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># coding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">maboss</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<div class="viewcode-block" id="MaBoSSTestCase"><a class="viewcode-back" href="../../api.html#maboss_test.MaBoSSTestCase.MaBoSSTestCase">[docs]</a><span class="k">class</span> <span class="nc">MaBoSSTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        MaBoSSTestCase is the class used to verify model validity. </span>
+<span class="sd">        It contains several methods to test various conditions </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Simulation</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Old_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Simulation</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Old_result</span> <span class="o">=</span> <span class="kc">None</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Simulation</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>     
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span> <span class="o">=</span> <span class="n">verbose</span>
+    
+    <span class="c1">#call at the end of the tests</span>
+    <span class="k">def</span> <span class="nf">resetSimulations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Old_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Simulation</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Old_result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Simulation</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    
+    <span class="k">def</span> <span class="nf">checkNodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">state</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Simulation</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s1">&#39;is not present in the network.&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        
+        <span class="k">return</span> <span class="kc">True</span>
+    
+    
+    <span class="c1">#set output for save time when you run a simulation   </span>
+    <span class="k">def</span> <span class="nf">setOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Old_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+              
+        
+    <span class="k">def</span> <span class="nf">setInitialConditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">initial_conditions</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">initial_conditions</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> 
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Care, you did not changed any initial condition!&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">initial_conditions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Old_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_istate</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">initial_conditions</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_istate</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">initial_conditions</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+        <span class="c1">#input: list: list[0]=list of node, list[1] dictionary of prob        </span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Old_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_istate</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial_conditions</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">set_istate</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial_conditions</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        
+        <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Invalid initial condition!&#39;</span><span class="p">)</span>
+            
+        <span class="k">return</span>
+    
+    
+    <span class="c1">#mutate New_simulation if a list of mutations is given</span>
+    <span class="k">def</span> <span class="nf">mutateSimulation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutations</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="k">if</span> <span class="n">mutations</span><span class="p">:</span> 
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">mutations</span><span class="p">:</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="p">)</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">mutations</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+                
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Care, you did not insert mutations!&#39;</span><span class="p">)</span>
+            
+        
+    <span class="k">def</span> <span class="nf">runBothSimulations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Old_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Old_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        
+    <span class="c1">#return the states of a sim with their probability</span>
+    <span class="k">def</span> <span class="nf">getProbtrajStates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sim_name</span> <span class="o">==</span> <span class="s1">&#39;New&#39;</span><span class="p">:</span> <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">New_result</span><span class="p">)</span><span class="o">.</span><span class="n">get_last_states_probtraj</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">sim_name</span> <span class="o">==</span> <span class="s1">&#39;Old&#39;</span><span class="p">:</span> <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Old_result</span><span class="p">)</span><span class="o">.</span><span class="n">get_last_states_probtraj</span><span class="p">()</span>
+        
+        <span class="n">states</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span>    
+        <span class="n">probability_states</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict----&gt; key:probability  value:state in list form</span>
+    
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+            <span class="n">prob</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">state</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">probability_states</span><span class="p">[</span><span class="n">prob</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; -- &#39;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">probability_states</span>
+    
+    <span class="c1">#return the stable states of a sim with their probability</span>
+    <span class="k">def</span> <span class="nf">getStableStates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sim_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sim_name</span> <span class="o">==</span> <span class="s1">&#39;New&#39;</span><span class="p">:</span> <span class="n">s_states_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span><span class="o">.</span><span class="n">get_fptable</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">sim_name</span> <span class="o">==</span> <span class="s1">&#39;Old&#39;</span><span class="p">:</span> <span class="n">s_states_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Old_result</span><span class="o">.</span><span class="n">get_fptable</span><span class="p">()</span>
+            
+        <span class="n">s_states</span> <span class="o">=</span> <span class="n">s_states_table</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span>
+        <span class="n">s_states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; -- &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">s_states</span><span class="p">]</span>
+        <span class="n">s_states_prob</span> <span class="o">=</span> <span class="n">s_states_table</span><span class="p">[</span><span class="s1">&#39;Proba&#39;</span><span class="p">]</span>
+        
+        <span class="n">probability_states</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">s_states_prob</span><span class="p">,</span><span class="n">s_states</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">probability_states</span>
+            
+    <span class="c1">#return a dictionari with the states satisfing the condition with probability as key     </span>
+    <span class="k">def</span> <span class="nf">checkForState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="p">{},</span> <span class="n">all_states</span><span class="o">=</span><span class="p">{}):</span>
+        
+        <span class="c1">#check if I&#39;m looking for &lt;nil&gt; state only for last prob traj :CHECK CASE IN WICH ALL STATES ARE 0</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">condition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="p">):</span> 
+            <span class="n">active_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&lt;nil&gt;&#39;</span><span class="p">]</span>
+            <span class="n">inactive_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">active_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">condition</span> <span class="k">if</span> <span class="n">condition</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">inactive_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">condition</span> <span class="k">if</span> <span class="n">condition</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">resulting_states</span> <span class="o">=</span> <span class="n">all_states</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>    <span class="c1">#states that s</span>
+        
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">active_nodes</span><span class="p">:</span>
+            <span class="n">resulting_states</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">resulting_states</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">resulting_states</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">resulting_states</span><span class="p">[</span><span class="n">x</span><span class="p">]}</span>
+            
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">inactive_nodes</span><span class="p">:</span>
+            <span class="n">resulting_states</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">resulting_states</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">resulting_states</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">resulting_states</span><span class="p">[</span><span class="n">x</span><span class="p">]}</span>
+        
+        <span class="k">if</span> <span class="n">resulting_states</span><span class="p">:</span> <span class="k">return</span> <span class="n">resulting_states</span>  <span class="c1">#if there is not match the probability is 0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span> <span class="c1">#{0: condition}</span>
+        
+        
+            
+    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">stepper</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">**</span> <span class="n">digits</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">stepper</span> <span class="o">*</span> <span class="n">number</span><span class="p">)</span> <span class="o">/</span> <span class="n">stepper</span>
+    
+    <span class="c1">#print the dictionary: prob_ state in a nice form</span>
+    <span class="k">def</span> <span class="nf">printStates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">states</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No one&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prob</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Probability = &#39;</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">State: &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="n">prob</span><span class="p">]))</span>
+        
+        <span class="k">return</span>
+    
+    
+    <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Old_p</span><span class="p">,</span> <span class="n">New_p</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">digits</span><span class="p">):</span>
+        <span class="n">Old_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">Old_p</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+        <span class="n">New_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">New_p</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+              
+        <span class="c1">#INCREASE?</span>
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">INCREASE</span><span class="p">:</span> 
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">New_p</span> <span class="o">&gt;</span> <span class="n">Old_p</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;True! &quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;... OK&#39;</span><span class="p">)</span>
+            
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;False! &quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                
+        <span class="c1">#DECREASE?   </span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">DECREASE</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">New_p</span> <span class="o">&lt;</span> <span class="n">Old_p</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;True! &quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;... OK&#39;</span><span class="p">)</span>
+            
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;False! &quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                
+        <span class="c1">#STAY THE SAME?</span>
+        <span class="k">elif</span> <span class="n">direction</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHANGE</span><span class="p">:</span> 
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">Old_p</span><span class="p">,</span> <span class="n">New_p</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;True! &quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;... OK&#39;</span><span class="p">)</span>
+            
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;False! &quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            
+           
+        <span class="k">return</span>   
+    
+    
+    <span class="c1">##################################################################################################################</span>
+    <span class="c1">############################################ ASSERTION FUNCTIONS #################################################</span>
+    <span class="c1">##################################################################################################################</span>
+    
+
+<div class="viewcode-block" id="MaBoSSTestCase.assertStateProbabilityEvolution"><a class="viewcode-back" href="../../api.html#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStateProbabilityEvolution">[docs]</a>    <span class="k">def</span> <span class="nf">assertStateProbabilityEvolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutations</span><span class="p">,</span> <span class="n">I_C</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assert the evolution of the probability of a given state after applying a mutation.</span>
+<span class="sd">        </span>
+<span class="sd">        :param dict mutations: The mutations to apply to the model</span>
+<span class="sd">        :param I_C: Initial conditions with which to simulate the model, it may be a list or a dictionary</span>
+<span class="sd">        :param dict state: The state to evaluate</span>
+<span class="sd">        :param string direction: The direction of the evolution of the given state, it may be: &#39;increase&#39;, &#39;decrease&#39; or &#39;stable&#39;</span>
+<span class="sd">		:param int digits: The number of digits you want to keep during the comparison </span>
+<span class="sd">        </span>
+<span class="sd">        This function will simulate the wild type model and the model with the given mutations, both with the initial conditions I_C. </span>
+<span class="sd">        It will then compare simulation results, and check if the given state is evolving in the indicated direction. </span>
+<span class="sd">        If not correct, this test will fail by raising an exception. </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkNodes</span><span class="p">(</span><span class="n">state</span><span class="p">):</span> <span class="k">return</span>
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">setOutput</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>             <span class="c1">#set the output for Old/New_sim </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setInitialConditions</span><span class="p">(</span><span class="n">I_C</span><span class="p">)</span>     <span class="c1">#set initial conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutateSimulation</span><span class="p">(</span><span class="n">mutations</span><span class="p">)</span>   <span class="c1">#mutate New_sim</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">runBothSimulations</span><span class="p">()</span>
+        
+        <span class="n">all_Old_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getProbtrajStates</span><span class="p">(</span><span class="s1">&#39;Old&#39;</span><span class="p">)</span>  <span class="c1">#dict: key:stateProb  value:state (list form)</span>
+        <span class="n">all_New_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getProbtrajStates</span><span class="p">(</span><span class="s1">&#39;New&#39;</span><span class="p">)</span>
+        
+        <span class="n">Old_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">all_Old_states</span><span class="p">)</span>  <span class="c1">#there should be prob_state:state_list_form </span>
+        <span class="n">New_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">all_New_states</span><span class="p">)</span>  <span class="c1">#if prob is not 0  </span>
+        
+        
+        <span class="k">if</span> <span class="n">Old_states</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="n">Old_state_prob</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">Old_state_prob</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Old_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>                 <span class="c1">#if possible invert keys and value</span>
+            
+        <span class="k">if</span> <span class="n">New_states</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span> <span class="n">New_state_prob</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">New_state_prob</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">New_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1">#check it is all fine</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Old_states</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">New_states</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">Old_states</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">Old_states</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR, TO MUTCH STATES&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+         
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">The new probability of reaching the state is: </span><span class="si">{}</span><span class="s1">&#39;</span>         <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">The old one is: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">New_state_prob</span><span class="p">,</span> <span class="n">Old_state_prob</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">Old_state_prob</span><span class="p">,</span> <span class="n">New_state_prob</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="c1">#ad an output!!!!!</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetSimulations</span><span class="p">()</span>
+    
+        <span class="k">return</span></div>
+    
+   
+<div class="viewcode-block" id="MaBoSSTestCase.assertStableStateProbabilityEvolution"><a class="viewcode-back" href="../../api.html#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStableStateProbabilityEvolution">[docs]</a>    <span class="k">def</span> <span class="nf">assertStableStateProbabilityEvolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutations</span><span class="p">,</span> <span class="n">I_C</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assert the evolution of the probability of a given stable state after applying a mutation.</span>
+<span class="sd">        </span>
+<span class="sd">        :param dict mutations: The mutations to apply to the model</span>
+<span class="sd">        :param I_C: Initial conditions with which to simulate the model, it may be a list or a dictionary</span>
+<span class="sd">        :param dict state: The state to evaluate</span>
+<span class="sd">        :param string direction: The direction of the evolution of the given state, it may be: &#39;increase&#39;, &#39;decrease&#39; or &#39;stable&#39;</span>
+<span class="sd">		:param int digits: The number of digits you want to keep during the comparison </span>
+<span class="sd">        </span>
+<span class="sd">        This function will simulate the wild type model and the model with the given mutations, both with the initial conditions I_C. </span>
+<span class="sd">        It will then compare simulation results, and check if the given stable state is evolving in the indicated direction. </span>
+<span class="sd">        If not correct, this test will fail by raising an exception. </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+         
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkNodes</span><span class="p">(</span><span class="n">state</span><span class="p">):</span> <span class="k">return</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">setInitialConditions</span><span class="p">(</span><span class="n">I_C</span><span class="p">)</span>    <span class="c1">#set initial conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutateSimulation</span><span class="p">(</span><span class="n">mutations</span><span class="p">)</span>   <span class="c1">#mutate New_sim</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">runBothSimulations</span><span class="p">()</span>
+        
+        <span class="n">all_Old_stable_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStableStates</span><span class="p">(</span><span class="s1">&#39;Old&#39;</span><span class="p">)</span>
+        <span class="n">all_New_stable_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStableStates</span><span class="p">(</span><span class="s1">&#39;New&#39;</span><span class="p">)</span>
+        
+        <span class="n">Old_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;stable&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">all_Old_stable_states</span><span class="p">)</span>
+        <span class="n">New_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;stable&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">all_New_stable_states</span><span class="p">)</span>     
+        
+        <span class="n">Old_state_prob</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">Old_states</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="k">for</span> <span class="n">prob</span> <span class="ow">in</span> <span class="n">Old_states</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">Old_state_prob</span> <span class="o">+=</span> <span class="n">prob</span>
+        
+        <span class="n">New_state_prob</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">New_states</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="k">for</span> <span class="n">prob</span> <span class="ow">in</span> <span class="n">New_states</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">New_state_prob</span> <span class="o">+=</span> <span class="n">prob</span>
+            
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">The new probability of reaching the stable state is: </span><span class="si">{}</span><span class="s1">&#39;</span>         <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">The old one is: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">New_state_prob</span><span class="p">,</span> <span class="n">Old_state_prob</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">Old_state_prob</span><span class="p">,</span> <span class="n">New_state_prob</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetSimulations</span><span class="p">()</span>
+        
+        <span class="k">return</span></div>
+    
+    
+    <span class="c1">#NAME?????</span>
+    <span class="c1">#maBoss only find ss with prob &gt;0?</span>
+    <span class="c1">#assert if given some condition (nodes dictionaries) other nodes has always the same values</span>
+	
+<div class="viewcode-block" id="MaBoSSTestCase.assertNodesDependencies"><a class="viewcode-back" href="../../api.html#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertNodesDependencies">[docs]</a>    <span class="k">def</span> <span class="nf">assertNodesDependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutations</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">nodes_expected</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assert that all states satisfying a condition on some given nodes also present the expected value for some other nodes.</span>
+<span class="sd">        </span>
+<span class="sd">        :param dict mutations: The mutations to apply to the model</span>
+<span class="sd">        :param dict condition: A list of nodes with a specifc value assigned (0:inactive or 1:active) that a state has to respect in order to be selected</span>
+<span class="sd">        :param dict nodes_expected: A list of nodes with a specifc value assigned (0:inactive or 1:active) that all the selected states have to respect</span>
+
+<span class="sd">        This function will simulate the model with the given mutations.</span>
+<span class="sd">        It will then extract the stable states of the model in which the activity of the nodes in condition is satisfied.</span>
+<span class="sd">		It will then check that, for each selected state, the values of the nodes in nodes_expected is satisfied.</span>
+<span class="sd">        If not correct, this test will fail by raising an exception. </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkNodes</span><span class="p">(</span><span class="n">condition</span><span class="p">):</span> <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkNodes</span><span class="p">(</span><span class="n">nodes_expected</span><span class="p">):</span> <span class="k">return</span>
+        
+        <span class="c1">#for stable states don&#39;t need outputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutateSimulation</span><span class="p">(</span><span class="n">mutations</span><span class="p">)</span>   <span class="c1">#mutate New_sim</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        
+        <span class="n">all_stable_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStableStates</span><span class="p">(</span><span class="s1">&#39;New&#39;</span><span class="p">)</span>
+        <span class="c1">#states satisfying the input condition</span>
+        <span class="n">states_satisfying_condition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;stable&#39;</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">all_stable_states</span><span class="p">)</span>
+        <span class="c1">#selected states satisfying both condition and nodes_expected</span>
+        <span class="k">if</span> <span class="n">states_satisfying_condition</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">nodes_expected</span><span class="p">:</span> <span class="n">selected_states</span> <span class="o">=</span> <span class="kc">None</span> 
+            <span class="k">else</span><span class="p">:</span> <span class="n">selected_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;stable&#39;</span><span class="p">,</span> <span class="n">nodes_expected</span><span class="p">,</span> <span class="n">states_satisfying_condition</span><span class="p">)</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not even one stable state satisfy: &quot;</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">states_satisfying_condition</span><span class="p">,</span> <span class="n">selected_states</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;True! </span><span class="se">\n</span><span class="s2">All the states that satisfy: &quot;</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="s2">&quot; have: &quot;</span><span class="p">,</span> <span class="n">nodes_expected</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;... OK&quot;</span><span class="p">)</span>
+                
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span> 
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">:</span> 
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;False! </span><span class="se">\n</span><span class="s1">The states with &#39;</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="s1">&#39; are : &#39;</span><span class="p">)</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">printStates</span><span class="p">(</span><span class="n">states_satisfying_condition</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Of these, those with &#39;</span><span class="p">,</span> <span class="n">nodes_expected</span><span class="p">,</span> <span class="s1">&#39; are: &#39;</span><span class="p">)</span>                        
+                <span class="bp">self</span><span class="o">.</span><span class="n">printStates</span><span class="p">(</span><span class="n">selected_states</span><span class="p">)</span>                  
+                                         
+            <span class="k">else</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetSimulations</span><span class="p">()</span>
+        
+        <span class="k">return</span></div>
+    
+    
+ 
+ 
+
+<div class="viewcode-block" id="MaBoSSTestCase.assertStableStateProbability"><a class="viewcode-back" href="../../api.html#maboss_test.MaBoSSTestCase.MaBoSSTestCase.assertStableStateProbability">[docs]</a>    <span class="k">def</span> <span class="nf">assertStableStateProbability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutations</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">reference_prob</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assert the evolution of the probability of a given stable state after applying a mutation.</span>
+<span class="sd">        </span>
+<span class="sd">        :param dict mutations: The mutations to apply to the model</span>
+<span class="sd">        :param dict state: The state to evaluate</span>
+<span class="sd">        :param string direction: The direction of the evolution of the given state, it may be: &#39;increase&#39;, &#39;decrease&#39; or &#39;stable&#39;</span>
+<span class="sd">		:param float reference_prob: The probability that will be compared with the probability to obtain &quot;state&quot;</span>
+<span class="sd">		:param int digits: The number of digits you want to keep during the comparison </span>
+<span class="sd">        </span>
+<span class="sd">        This function will simulate the model with the given mutations.</span>
+<span class="sd">        It will then compare simulation results with reference_prob, and check if the given stable state is evolving in the indicated direction. </span>
+<span class="sd">        If not correct, this test will fail by raising an exception. </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+         
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkNodes</span><span class="p">(</span><span class="n">state</span><span class="p">):</span> <span class="k">return</span>    
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutateSimulation</span><span class="p">(</span><span class="n">mutations</span><span class="p">)</span>          <span class="c1">#mutate New_sim</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        
+        <span class="n">all_New_stable_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getStableStates</span><span class="p">(</span><span class="s1">&#39;New&#39;</span><span class="p">)</span>
+        
+        <span class="n">New_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkForState</span><span class="p">(</span><span class="s1">&#39;stable&#39;</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">all_New_stable_states</span><span class="p">)</span>     
+        
+        <span class="n">New_state_prob</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">New_states</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="k">for</span> <span class="n">prob</span> <span class="ow">in</span> <span class="n">New_states</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">New_state_prob</span> <span class="o">+=</span> <span class="n">prob</span>
+            
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">The probability of reaching the state is: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">New_state_prob</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The reference probability is: &#39;</span><span class="p">,</span> <span class="n">reference_prob</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">reference_prob</span><span class="p">,</span> <span class="n">New_state_prob</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetSimulations</span><span class="p">()</span>
+        
+        <span class="k">return</span></div>
+        
+        
+        
+    <span class="n">INCREASE</span> <span class="o">=</span> <span class="s1">&#39;increase&#39;</span>
+    <span class="n">DECREASE</span> <span class="o">=</span> <span class="s1">&#39;decrease&#39;</span>
+    <span class="n">CHANGE</span> <span class="o">=</span> <span class="s1">&#39;stable&#39;</span>                      <span class="c1">#actually it is: does not change  </span>
+   
+
+
+
+	<span class="c1">#take last nodes probability for every node</span>
+<div class="viewcode-block" id="MaBoSSTestCase.getLastNodesProbabilities"><a class="viewcode-back" href="../../api.html#maboss_test.MaBoSSTestCase.MaBoSSTestCase.getLastNodesProbabilities">[docs]</a>    <span class="k">def</span> <span class="nf">getLastNodesProbabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mutations</span><span class="p">,</span> <span class="n">I_C</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a dictionary with the final activation probabily of every node in the model.</span>
+<span class="sd">        </span>
+<span class="sd">		:param dict mutations: The mutations to apply to the model</span>
+<span class="sd">        :param dict I_C: Initial conditions with which to simulate the model, it may be a list or a dictionary</span>
+
+
+<span class="sd">        This function will simulate the model with the given mutations and initial conditions.</span>
+<span class="sd">        It will then return the activation probability of each node in a form that can be used as initial condition for the assert functions.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>    	 
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">setOutput</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setInitialConditions</span><span class="p">(</span><span class="n">I_C</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutateSimulation</span><span class="p">(</span><span class="n">mutations</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        
+        <span class="n">prob_table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_result</span><span class="o">.</span><span class="n">get_last_nodes_probtraj</span><span class="p">()</span>
+        
+        
+        <span class="n">probability</span> <span class="o">=</span> <span class="p">{}</span>
+    
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">prob_table</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">prob_table</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">probability</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="p">]</span>
+            
+        
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">New_sim</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">probability</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">probability</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+                
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetSimulations</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="n">probability</span> </div></div>
+
+
+<span class="c1"># In[ ]:</span>
+
+
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">MaBoSS_test</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Tutorial.html">MaBoSS_test tutorial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">maboss_test API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Lorenzo Pantolini.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
